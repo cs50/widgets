@@ -19,6 +19,7 @@ var target = inputs.target;
 //var prompted = inputs.prompted;
 
 $(function() {
+    loadCache();
     /* Disable drag and toggle doors on click */
     $(".door").each(function() {
         $(this).on('dragstart', function() {return false;});
@@ -44,8 +45,8 @@ $(function() {
         $("#sortSwitch").bootstrapToggle("off");
     }
     $("#sortLabel").on("click", function() {
-        var x = $("#sortSwitch").prop("checked") === true ? "off" : "on";
-        $("#sortSwitch").bootstrapToggle(x);
+        $("#sortSwitch").bootstrapToggle('toggle');
+        cache();
     });
     $("#sortSwitch").change(function() {
         organizeNumbers();
@@ -56,6 +57,7 @@ $(function() {
         if (isPlaying) {
             startGame();
         }
+        cache();
     });
     
     /* Label Switch functionality */
@@ -64,11 +66,12 @@ $(function() {
         toggleLabels();
     }
     $("#labelLabel").on("click", function() {
-        var x = $("#labelSwitch").prop("checked") === true ? "off" : "on";
-        $("#labelSwitch").bootstrapToggle(x);
+        $("#labelSwitch").bootstrapToggle('toggle');
+        cache();
     });
     $("#labelSwitch").change(function() {
         toggleLabels();
+        cache();
     });
     
     /* Big O Switch functionality */
@@ -76,12 +79,13 @@ $(function() {
         $("#oSwitch").bootstrapToggle("off");
     }
     $("#OLabel").on("click", function() {
-        var x = $("#oSwitch").prop("checked") === true ? "off" : "on";
-        $("#oSwitch").bootstrapToggle(x);
+        $("#oSwitch").bootstrapToggle('toggle');
+        cache();
     });
     $("#oSwitch").change(function() {
         if (isPlaying)
             startGame();
+        cache();
     });
     
     /* Play Button functionality */
@@ -96,28 +100,36 @@ $(function() {
     organizeNumbers();
     loadNumbers(nums);
     startGame();
+    cache();
 });
 
 /* Expects single comma-separated query, turns into default nums */
 function parseURL(str) {
     var arr = "";
     var sorted = "1";
-    var labeled = "0";
+    var labeled = "1";
+    var target = "50";
     var bigO = "1";
     //var prompted = "1";
+    if (str.indexOf("target") !== -1) {
+        target = "";
+        for (var k = str.indexOf("target") + 7;
+                k < str.length && str.charAt(k) !== "&"; k++) {
+            target += str.charAt(k);
+        }
+    }
     if (str.indexOf("array") !== -1) {
         for (var k = str.indexOf("array") + 6; 
                  k < str.length && str.charAt(k) !== "&"; k++) {
-            arr+=str.charAt(k);
+            arr += str.charAt(k);
         }
         arr = arr.split(",");
         for (var k = 0; k < arr.length; k++) {
             arr[k] = parseInt(arr[k], 10);
         }
-    }
-    if (str.indexOf("sorted") !== -1
-        && str.indexOf("sorted") + 7 <= str.length) {
-        sorted = str.charAt(str.indexOf("sorted") + 7);
+        if (contains(arr, parseInt(target), DOORS) === false) {
+            target = arr[Math.floor((Math.random() * DOORS))];
+        }
     }
     if (str.indexOf("labeled") !== -1
         && str.indexOf("labeled") + 8 <= str.length) {
@@ -132,13 +144,14 @@ function parseURL(str) {
         prompted = str.charAt(str.indexOf("prompt") + 7);
     }*/
     return {"array": arr, "sorted": sorted, "labeled" : labeled, 
-        /*"prompted" : prompted,*/ "bigO" : bigO};
+        /*"prompted" : prompted,*/ "target" : target, "bigO" : bigO};
 }
 
-/* Not guaranteed to be unique */
+/* Generates unique array of numbers */
 function generateNumbers() {
     var arr = new Array(DOORS);
-    for (var k = 0; k < DOORS; k++) {
+    arr[0] = target;
+    for (var k = 1; k < DOORS; k++) {
         do {
             var x = Math.floor(Math.random() * (100));
         }
@@ -199,6 +212,11 @@ function adjustNumberPlace(obj) {
 
 /* Opens door, checks value of number, and celebrates if correct. */
 function checkDoor(obj) {
+    if (isPlaying) {
+        $("#oSwitch").bootstrapToggle("disable");
+        $("#sortSwitch").bootstrapToggle("disable");
+        tooltips(".ttip", "Start a new game to toggle switch!");
+    }
     openDoor(obj);
     if (matchesValue(obj)) {
         setNumColor(obj, "green");
@@ -247,6 +265,7 @@ function closeDoor(obj) {
 
 /* Loses the game, revealing the answer and closing doors. */
 function lose() {
+    $(".ttip").qtip('destroy');
     $("#sortSwitch").bootstrapToggle("disable");
     $("#oSwitch").bootstrapToggle("disable");
     $("#labelSwitch").bootstrapToggle("disable");
@@ -257,10 +276,6 @@ function lose() {
     });
     $("#gameText").html("Time's up!");
     setTimeout(function() {
-        $(".door").each(function() {
-            closeDoor(this);
-            setNumColor(this, "black");
-        });
         resetState();
         $("#sortSwitch").bootstrapToggle("enable");
         $("#labelSwitch").bootstrapToggle("enable");
@@ -272,20 +287,16 @@ function lose() {
 
 /* Opens all doors, bounces numbers, closes doors. */
 function celebrate(obj) {
+    $(".ttip").qtip('destroy');
     $("#sortSwitch").bootstrapToggle("disable");
     $("#oSwitch").bootstrapToggle("disable");
     $("#labelSwitch").bootstrapToggle("disable");
     $("#gameText").html("You win!");
     
     setNumColor(obj, "green");
-    
     var celeb = setInterval(function() {
-        $(".number").each(function() {
-            if ($(this).attr("color") === "green") {
-                move(this, "-=20");
-                move(this, "+=20");
-            }
-        });
+        move($(obj).siblings("p").eq(0), "-=20");
+        move($(obj).siblings("p").eq(0), "+=20");
     }, ANIMATE_TIME);
         
     setTimeout(function() {
@@ -409,13 +420,13 @@ function initGame() {
     });
     $("#gameText").css("visibility", "visible");
     for (var k = 0; k < 10; k++) {
-    var val = nums[Math.floor(Math.random() * 7)];
+    var val = target;
     }
     $("#gameVal").html(val);
     $("#gameVal").attr("value", val);
 }
 
-function makeAlert(str) {
+/*function makeAlert(str) {
     var alrt = new BootstrapDialog({
         title: str,
         message: function(dialogRef) {
@@ -431,7 +442,7 @@ function makeAlert(str) {
     alrt.setClosable(false);
     alrt.getModalBody().css('color', '#000');
     alrt.open();
-}
+}*/
 
 function toggleLabels () {
     $(".door").each(function() {
@@ -443,4 +454,56 @@ function toggleLabels () {
             temp.html("");
         }
     });
+}
+
+function tooltips(c, str) {
+    $(c).qtip({
+       content: { text: str },
+       position: {
+          target: 'mouse',
+          adjust: {
+            x: 15,
+            y: 20,
+            mouse: true,
+            resize: true
+          }
+       },
+       style: { classes: 'qtip-tipsy' }
+    });
+}
+
+function cache() {
+    localStorage.setItem("oSwitch", $("#oSwitch").prop('checked'));
+    localStorage.setItem("labelSwitch", $("#labelSwitch").prop('checked'));
+    localStorage.setItem("sortSwitch", $("#sortSwitch").prop('checked'));
+}
+
+function loadCache() {
+    if (localStorage.getItem("oSwitch") === null) {
+        $("#oSwitch").bootstrapToggle("on");
+    }
+    else if (localStorage.getItem("oSwitch") === "true") {
+        $("#oSwitch").bootstrapToggle("on");
+    }
+    else {
+        $("#oSwitch").bootstrapToggle("off");
+    }
+    if (localStorage.getItem("labelSwitch") === null) {
+        $("#labelSwitch").bootstrapToggle("off");
+    }
+    else if (localStorage.getItem("labelSwitch") === "true") {
+        $("#labelSwitch").bootstrapToggle("on");
+    }
+    else {
+        $("#labelSwitch").bootstrapToggle("off");
+    }
+    if (localStorage.getItem("sortSwitch") === null) {
+        $("#sortSwitch").bootstrapToggle("on");
+    }
+    else if (localStorage.getItem("sortSwitch") === "true") {
+        $("#sortSwitch").bootstrapToggle("on");
+    }
+    else {
+        $("#sortSwitch").bootstrapToggle("off");
+    }
 }
