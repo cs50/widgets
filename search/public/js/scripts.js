@@ -15,11 +15,24 @@ var nums = inputs.array;
 var sorted = inputs.sorted;
 var labeled = inputs.labeled;
 var bigO = inputs.bigO;
-var target = inputs.target;
+var target = parseInt(inputs.target);
 //var prompted = inputs.prompted;
+/* timeout variable */
+var timeout;
+/* celebrate interval variable */
+var celeb;
+
+var WIDTH = Math.max(screen.width, screen.height);
 
 $(function() {
     loadCache();
+
+    // Initial / resized scaling.
+    scale();
+    $(window).resize(function(){
+        scale();
+    });
+
     /* Disable drag and toggle doors on click */
     $(".door").each(function() {
         $(this).on('dragstart', function() {return false;});
@@ -32,21 +45,19 @@ $(function() {
             $(this).siblings(".door").eq(0).trigger("click");
         });
     });
-    $(".number").each(function() {
+    /*$(".number").each(function() {
         $(this).click(function() {
             if (!isPlaying) {
                 closeDoor($(this).siblings(".door").eq(0));
             }
         });
-    });
-    
+    });*/
     /* Sort Switch functionality */
     if (sorted === "0") {
         $("#sortSwitch").bootstrapToggle("off");
     }
     $("#sortLabel").on("click", function() {
         $("#sortSwitch").bootstrapToggle('toggle');
-        cache();
     });
     $("#sortSwitch").change(function() {
         organizeNumbers();
@@ -65,9 +76,12 @@ $(function() {
         $("#labelSwitch").bootstrapToggle("off");
         toggleLabels();
     }
+    else {
+        $("#labelSwitch").bootstrapToggle("on");
+        toggleLabels();
+    }
     $("#labelLabel").on("click", function() {
         $("#labelSwitch").bootstrapToggle('toggle');
-        cache();
     });
     $("#labelSwitch").change(function() {
         toggleLabels();
@@ -75,12 +89,14 @@ $(function() {
     });
     
     /* Big O Switch functionality */
-    if (bigO === "0") {
+    if (bigO === "logn") {
         $("#oSwitch").bootstrapToggle("off");
+    }
+    else if (bigO === "n") {
+        $("#oSwitch").bootstrapToggle("on");
     }
     $("#OLabel").on("click", function() {
         $("#oSwitch").bootstrapToggle('toggle');
-        cache();
     });
     $("#oSwitch").change(function() {
         if (isPlaying)
@@ -90,7 +106,13 @@ $(function() {
     
     /* Play Button functionality */
     $("#playButton").on("click", function() {
+        organizeNumbers();
+        loadNumbers(nums);
+        clearInterval(celeb);
+        clearTimeout(timeout);
         startGame();
+        $("#oSwitch").bootstrapToggle("enable");
+        $("#sortSwitch").bootstrapToggle("enable");
     });
     
     /* Generates array of numbers and organizes */
@@ -103,13 +125,23 @@ $(function() {
     cache();
 });
 
+function scale() {
+    var newWidth = Math.max(0.9, $(window).width() / WIDTH);
+    $(".button").each(function() {
+        $(this).css("transform", "scale(" + newWidth + ", " + newWidth + ")");  
+    });
+    $(".labels").each(function() {
+        $(this).css("max-width", $(window).width() / (DOORS + 2));
+    });
+}
+
 /* Expects single comma-separated query, turns into default nums */
 function parseURL(str) {
     var arr = "";
     var sorted = "1";
     var labeled = "1";
     var target = "50";
-    var bigO = "1";
+    var bigO = "";
     //var prompted = "1";
     if (str.indexOf("target") !== -1) {
         target = "";
@@ -137,7 +169,16 @@ function parseURL(str) {
     }
     if (str.indexOf("bigO") !== -1
         && str.indexOf("bigO") + 5 <= str.length) {
-        bigO = str.charAt(str.indexOf("bigO") + 5);
+        if (str.charAt(str.indexOf("bigO") + 5)==="n") {
+            bigO = "n";
+        }
+        else if (str.indexOf("bigO") + 5 === str.indexOf("logn")) {
+            bigO = "logn";
+        }
+    }
+    if (str.indexOf("sorted") !== -1
+        && str.indexOf("sorted") + 7 <= str.length) {
+        sorted = str.charAt(str.indexOf("sorted") + 7);
     }
 /*    if (str.indexOf("prompt") !== -1
         && str.indexOf("prompt") + 7 <= str.length) {
@@ -150,14 +191,17 @@ function parseURL(str) {
 /* Generates unique array of numbers */
 function generateNumbers() {
     var arr = new Array(DOORS);
-    arr[0] = target;
-    for (var k = 1; k < DOORS; k++) {
+    for (var k = 0; k < DOORS; k++) {
         do {
             var x = Math.floor(Math.random() * (100));
         }
         while (contains(arr, x, k));
         arr[k] = x;
     }
+    if (!contains(arr, target, DOORS)) {
+        arr[0] = target;
+    }
+    console.log(arr);
     return arr;
 }
 
@@ -272,10 +316,13 @@ function lose() {
     $(".door").each(function() {
         if (matchesValue(this)) {
             openDoor(this);
+            setNumColor(this, "green");
         }
     });
-    $("#gameText").html("Time's up!");
-    setTimeout(function() {
+    celeb = setInterval(function() {
+        $("#gameText").html("Time's up!");
+    }, ANIMATE_TIME);
+    timeout = setTimeout(function() {
         resetState();
         $("#sortSwitch").bootstrapToggle("enable");
         $("#labelSwitch").bootstrapToggle("enable");
@@ -294,12 +341,12 @@ function celebrate(obj) {
     $("#gameText").html("You win!");
     
     setNumColor(obj, "green");
-    var celeb = setInterval(function() {
+    celeb = setInterval(function() {
         move($(obj).siblings("p").eq(0), "-=20");
         move($(obj).siblings("p").eq(0), "+=20");
     }, ANIMATE_TIME);
         
-    setTimeout(function() {
+    timeout = setTimeout(function() {
         clearInterval(celeb);
         resetState();
         $("#sortSwitch").bootstrapToggle("enable");
@@ -307,7 +354,7 @@ function celebrate(obj) {
         $("#oSwitch").bootstrapToggle("enable");
         $("#gameText").html( 'Find the number <span id="gameVal"' + 
             'value=""></span> in <span id="steps">15</span> steps!');
-    }, OPEN_TIME * 2); 
+    }, OPEN_TIME); 
 }
 
 /* Moves element by magnitude */
@@ -409,6 +456,8 @@ function startGame() {
 
 function initGame() {
     isPlaying = true;
+    $("#gameText").html( 'Find the number <span id="gameVal"' + 
+        'value=""></span> in <span id="steps">15</span> steps!');
     if ($("#oSwitch").prop("checked") === false) {
         $("#steps").html("4");
     }
@@ -444,16 +493,18 @@ function initGame() {
     alrt.open();
 }*/
 
-function toggleLabels () {
-    $(".door").each(function() {
-        var temp = $(this).children(".index").eq(0);
-        if ($("#labelSwitch").prop("checked") === true) {
-            temp.html(temp.attr("id").substring(1));
-        }
-        else {
-            temp.html("");
-        }
-    });
+function toggleLabels (state) {
+    if (!state) {
+        $(".door").each(function() {
+            var temp = $(this).children(".index").eq(0);
+            if ($("#labelSwitch").prop("checked") === true) {
+                temp.html(temp.attr("id").substring(1));
+            }
+            else {
+                temp.html("");
+            }
+        });
+    }
 }
 
 function tooltips(c, str) {
@@ -490,12 +541,14 @@ function loadCache() {
     }
     if (localStorage.getItem("labelSwitch") === null) {
         $("#labelSwitch").bootstrapToggle("off");
+        toggleLabels();
     }
     else if (localStorage.getItem("labelSwitch") === "true") {
         $("#labelSwitch").bootstrapToggle("on");
     }
     else {
         $("#labelSwitch").bootstrapToggle("off");
+        toggleLabels();
     }
     if (localStorage.getItem("sortSwitch") === null) {
         $("#sortSwitch").bootstrapToggle("on");

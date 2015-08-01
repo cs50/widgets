@@ -42,7 +42,7 @@
     <center><button type="button" class="btn btn-info btn-sm" id="playButton">New Game</button></center>
     <ul>
         <li>
-            <div class="button ttip">
+            <div class="ttip button">
                 <p class="text labels" id="OLabel">Efficiency</p>
                 <input class="toggle-group" id="oSwitch" checked type="checkbox" 
                     data-toggle="toggle" data-size="small"> 
@@ -65,10 +65,10 @@
         </li>
         <!--<li><button type="button" class="btn btn-info btn-md" id="playButton">Game Mode</button></li>-->
         <li>
-            <div class="button ttip">
-                <p class="text labels ttip" id="sortLabel">Sorted</p>
-                <input id="sortSwitch" class="toggle-group" checked 
-                    type="checkbox" data-toggle="toggle" data-size="small">    
+            <div class="ttip button">
+                <p class="text labels" id="sortLabel">Sorted</p>
+                <input class="toggle-group" id="sortSwitch" checked type="checkbox" 
+                    data-toggle="toggle" data-size="small">    
             </div>
         </li>
     </ul>

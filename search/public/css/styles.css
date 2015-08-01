@@ -29,7 +29,7 @@
 
 }
 
-.labels:hover, .index:hover, .number:hover, .door:hover {
+.labels:hover, .index:hover, .door:hover {
     cursor:pointer;
 }
 
@@ -89,7 +89,8 @@ li {
 
 .labels {
     font-size: 1.1vw;
-    margin: 0;
+    margin: 0 auto;
+    width: 7vw;
 }
 
 .toggle-group { 
@@ -113,13 +114,18 @@ center {
 
 .form-control {
     display: inline;
-    width: 46px;
     margin-left: 1%;
     margin-right: 1%;
-    margin-bottom: 1%
 }
 
 #gok, .btn-block {
     margin: 0 auto;
     width: 100px;
 }
+
+.button {
+    margin: 0 auto;
+    text-align: center;
+    width: 50%;
+}
+
