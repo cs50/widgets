@@ -1,15 +1,22 @@
 /* Search Widget
  * Michael Ge, 2015 */
 
-/* Number of doors */
+// Number of doors 
 var DOORS = 15;
-/* Duration Door is open */
+// Length of celebration or loss
 var OPEN_TIME = 2000;
-/* Celebration animation time */
+// Celebration or loss animation speed
 var ANIMATE_TIME = 300;
-/* Checks if currently playing */
+// Checks if currently playing a game
 var isPlaying = false;
-/* Info passed in from URL search*/
+// timeout variable to clear timeout on new game
+var timeout;
+// celebrate interval variable to clear interval on new game
+var celeb;
+// Width of screen
+var WIDTH = Math.max(screen.width, screen.height);
+
+// Info passed in from URL search
 var inputs = parseURL(window.location.search);
 var nums = inputs.array;
 var sorted = inputs.sorted;
@@ -17,12 +24,6 @@ var labeled = inputs.labeled;
 var bigO = inputs.bigO;
 var target = parseInt(inputs.target);
 //var prompted = inputs.prompted;
-/* timeout variable */
-var timeout;
-/* celebrate interval variable */
-var celeb;
-
-var WIDTH = Math.max(screen.width, screen.height);
 
 $(function() {
     loadCache();
@@ -33,13 +34,14 @@ $(function() {
         scale();
     });
 
-    /* Disable drag and toggle doors on click */
+    // Disable image drag and toggle doors on click
     $(".door").each(function() {
         $(this).on('dragstart', function() {return false;});
         $(this).click(function() {
             checkDoor(this);
         });
     });
+    // Open doors on index click
     $(".index").each(function() {
         $(this).click(function() {
             $(this).siblings(".door").eq(0).trigger("click");
@@ -52,9 +54,13 @@ $(function() {
             }
         });
     });*/
-    /* Sort Switch functionality */
+    
+    // Sort Switch either sorts or shuffles numbers and starts new game
     if (sorted === "0") {
         $("#sortSwitch").bootstrapToggle("off");
+    }
+    else if (sorted === "1") {
+        $("#sortSwitch").bootstrapToggle("on");
     }
     $("#sortLabel").on("click", function() {
         $("#sortSwitch").bootstrapToggle('toggle');
@@ -71,12 +77,12 @@ $(function() {
         cache();
     });
     
-    /* Label Switch functionality */
+    // Label switch toggles labels on and off.
     if (labeled === "0") {
         $("#labelSwitch").bootstrapToggle("off");
         toggleLabels();
     }
-    else {
+    else if (labeled === "1") {
         $("#labelSwitch").bootstrapToggle("on");
         toggleLabels();
     }
@@ -88,7 +94,7 @@ $(function() {
         cache();
     });
     
-    /* Big O Switch functionality */
+    // Big O Switch prompts game to play in either 15 or 4 moves.
     if (bigO === "logn") {
         $("#oSwitch").bootstrapToggle("off");
     }
@@ -99,12 +105,13 @@ $(function() {
         $("#oSwitch").bootstrapToggle('toggle');
     });
     $("#oSwitch").change(function() {
-        if (isPlaying)
+        if (isPlaying) {
             startGame();
+        }
         cache();
     });
     
-    /* Play Button functionality */
+    // Play Button starts new game
     $("#playButton").on("click", function() {
         organizeNumbers();
         loadNumbers(nums);
@@ -115,7 +122,7 @@ $(function() {
         $("#sortSwitch").bootstrapToggle("enable");
     });
     
-    /* Generates array of numbers and organizes */
+    // Generates array of numbers if not given
     if (!nums) {
         nums = generateNumbers();
     }
@@ -126,20 +133,18 @@ $(function() {
 });
 
 function scale() {
-    var newWidth = Math.max(0.9, $(window).width() / WIDTH);
-    $(".button").each(function() {
+    var newWidth = Math.max(0.8, $(window).width() / WIDTH);
+    $("#playButton").css("transform", "scale(" + newWidth + ", " + newWidth + ")");
+    $("li").each(function() {
         $(this).css("transform", "scale(" + newWidth + ", " + newWidth + ")");  
-    });
-    $(".labels").each(function() {
-        $(this).css("max-width", $(window).width() / (DOORS + 2));
     });
 }
 
-/* Expects single comma-separated query, turns into default nums */
+/* Parses URL for nums, sorted, labeled, target, bigO and -not prompt- */
 function parseURL(str) {
     var arr = "";
-    var sorted = "1";
-    var labeled = "1";
+    var sorted = "";
+    var labeled = "";
     var target = "50";
     var bigO = "";
     //var prompted = "1";
@@ -188,7 +193,7 @@ function parseURL(str) {
         /*"prompted" : prompted,*/ "target" : target, "bigO" : bigO};
 }
 
-/* Generates unique array of numbers */
+// Generates unique array of numbers always including the target
 function generateNumbers() {
     var arr = new Array(DOORS);
     for (var k = 0; k < DOORS; k++) {
@@ -201,10 +206,10 @@ function generateNumbers() {
     if (!contains(arr, target, DOORS)) {
         arr[0] = target;
     }
-    console.log(arr);
     return arr;
 }
 
+// checks if arr contains val up to current index in array
 function contains(arr, val, current) {
     for (var k = 0; k < current; k++) {
         if (val === arr[k]) {
@@ -214,7 +219,7 @@ function contains(arr, val, current) {
     return false;
 }
 
-/* Loads and adjusts numbers behind doors */
+// Loads and adjusts number placement behind doors
 function loadNumbers(arr) {
     var i = 0;
     $(".room").each(function() {
@@ -227,6 +232,20 @@ function loadNumbers(arr) {
     });
 }
 
+/* Adjusts central placement behind doors */
+function adjustNumberPlace(obj) {
+    if ($(obj).attr("value") >= 20) {
+        $(obj).css("left", "2.5vw");
+    }
+    else if ($(obj).attr("value") >= 10) {
+        $(obj).css("left", "2.7vw");
+    }
+    else {
+        $(obj).css("left", "3vw");
+    }
+}
+
+// Sorts or shuffles numbers behind doors
 function organizeNumbers() {
     if ($("#sortSwitch").prop("checked")) {
         nums.sort(function(a, b) {return a - b;});
@@ -238,19 +257,6 @@ function organizeNumbers() {
             nums[k] = nums[j];
             nums[j] = temp;
         }
-    }
-}
-
-/* Adjusts central placement in doors */
-function adjustNumberPlace(obj) {
-    if ($(obj).attr("value") >= 20) {
-        $(obj).css("left", "2.5vw");
-    }
-    else if ($(obj).attr("value") >= 10) {
-        $(obj).css("left", "2.7vw");
-    }
-    else {
-        $(obj).css("left", "3vw");
     }
 }
 
@@ -268,7 +274,6 @@ function checkDoor(obj) {
     }
     else {
         if (isPlaying) {
-            setNumColor(obj, "black");
             var x = $("#steps").html();
             $("#steps").html(parseInt(x)- 1);
         }
@@ -283,7 +288,7 @@ function checkDoor(obj) {
     }
 }
 
-/* Compares number to gameVal */
+/* Compares number of door to gameVal */
 function matchesValue(obj) {
     return $(obj).siblings().eq(0).attr("value") === $("#gameVal").attr("value");
 }
@@ -292,14 +297,14 @@ function setNumColor(obj, color) {
     $(obj).siblings().eq(0).css("color", color);
 }
 
-/* Opens the door */
+// Opens the door
 function openDoor(obj) {
     var temp = $(obj).children(".index").eq(0);
     temp.css("visibility", "hidden");
     $(obj).css("visibility", "hidden");
 }
 
-/* Closes the door */
+// Closes the door
 function closeDoor(obj) {
     var temp = $(obj).children(".index").eq(0);
     temp.css("visibility", "visible");
@@ -307,7 +312,7 @@ function closeDoor(obj) {
     setNumColor(obj, "black");
 }
 
-/* Loses the game, revealing the answer and closing doors. */
+// Loses the game, revealing the answer and closing doors.
 function lose() {
     $(".ttip").qtip('destroy');
     $("#sortSwitch").bootstrapToggle("disable");
@@ -332,7 +337,7 @@ function lose() {
     }, OPEN_TIME);
 }
 
-/* Opens all doors, bounces numbers, closes doors. */
+// Opens all doors, bounces numbers, closes doors.
 function celebrate(obj) {
     $(".ttip").qtip('destroy');
     $("#sortSwitch").bootstrapToggle("disable");
@@ -357,13 +362,14 @@ function celebrate(obj) {
     }, OPEN_TIME); 
 }
 
-/* Moves element by magnitude */
+// Moves element up and down by magnitude. For animation celebration.
 function move(obj, magnitude) {
     $(obj).animate({
         top: magnitude
     }, ANIMATE_TIME/2);
 }
 
+//Resets to non-game state
 function resetState() {
     $("#gameVal").html("");
     $("#gameVal").attr("value", "");
@@ -377,6 +383,7 @@ function resetState() {
     isPlaying = false;
 }
 
+//Starts a game by initializing a game state.
 function startGame() {
     /*if (prompted === "1") {
          var dialog = new BootstrapDialog({
@@ -454,6 +461,7 @@ function startGame() {
 //    }
 }
 
+// Initializes a game state.
 function initGame() {
     isPlaying = true;
     $("#gameText").html( 'Find the number <span id="gameVal"' + 
@@ -475,6 +483,7 @@ function initGame() {
     $("#gameVal").attr("value", val);
 }
 
+// Makes an alert for incorrect inputs to modal
 /*function makeAlert(str) {
     var alrt = new BootstrapDialog({
         title: str,
@@ -493,6 +502,7 @@ function initGame() {
     alrt.open();
 }*/
 
+//Enables and disables door indices
 function toggleLabels (state) {
     if (!state) {
         $(".door").each(function() {
@@ -507,6 +517,7 @@ function toggleLabels (state) {
     }
 }
 
+// Initializes tooltips
 function tooltips(c, str) {
     $(c).qtip({
        content: { text: str },
@@ -523,12 +534,14 @@ function tooltips(c, str) {
     });
 }
 
+// Stores switch states in cache.
 function cache() {
     localStorage.setItem("oSwitch", $("#oSwitch").prop('checked'));
     localStorage.setItem("labelSwitch", $("#labelSwitch").prop('checked'));
     localStorage.setItem("sortSwitch", $("#sortSwitch").prop('checked'));
 }
 
+// Sets cache values of switches on page load
 function loadCache() {
     if (localStorage.getItem("oSwitch") === null) {
         $("#oSwitch").bootstrapToggle("on");

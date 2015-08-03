@@ -34,9 +34,9 @@
 }
 
 .images {
-    margin: 0 auto;
     text-align: center;
     margin-left: -2%;
+    margin-bottom: -1%;
 }
 
 .room, .door {
@@ -70,6 +70,8 @@ img {
 }
 
 #gameText {
+    margin-top: 1%;
+    margin-bottom: 1%;
     font-size: 2vw;
     visibility: hidden;
 }
@@ -83,14 +85,16 @@ ul {
 }
 
 li {
-    width: 15vw;
+    margin: 0 auto;
+    padding: 0;
     display: inline-block;
+    text-align: center;
 }
 
 .labels {
-    font-size: 1.1vw;
+    font-size: 15px;
     margin: 0 auto;
-    width: 7vw;
+    width: 80px;
 }
 
 .toggle-group { 
@@ -98,13 +102,8 @@ li {
     -webkit-transition: none;
 }
 
-center {
-    margin-bottom: 1%;
-}
-
-.modal-dialog {
+/*.modal-dialog {
     position: relative;
-    left: 0vw;
     padding: 0;
     margin-left: 25vw;
     margin-right: auto;
@@ -121,11 +120,18 @@ center {
 #gok, .btn-block {
     margin: 0 auto;
     width: 100px;
-}
+}*/
 
 .button {
-    margin: 0 auto;
+    display: inline;
     text-align: center;
-    width: 50%;
+    width: 100%;
 }
 
+#labelDiv {
+    width: 30%;
+}
+
+#playButton {
+    margin-bottom: 1%;
+}

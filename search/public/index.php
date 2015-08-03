@@ -39,7 +39,7 @@
     <p class="text" id="gameText">
         Find the number <span id="gameVal" value=""></span> in <span id="steps">15</span> steps!
     </p>
-    <center><button type="button" class="btn btn-info btn-sm" id="playButton">New Game</button></center>
+    <center><button type="button" class="btn btn-primary btn-sm" id="playButton">New Game</button></center>
     <ul>
         <li>
             <div class="ttip button">
@@ -56,7 +56,7 @@
                 </script>
             </div>
         </li>
-        <li>
+        <li id="labelDiv">
             <div class="button">
                 <p class="text labels" id="labelLabel">Labels</p>
                 <input class="toggle-group" id="labelSwitch"
