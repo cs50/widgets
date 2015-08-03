@@ -5,6 +5,7 @@ Online Widgets for CS50. Includes the following:
 2. Doors - a search tool widget hiding numbers behind doors. The user can search 15 doors in either O(n) or O(logn) time.
 
 Embedding Instructions
+
 1. Bulbs
 Embed bulbs with an iframe linking to index.php with a width and height. Include teststyles.css as css file for 
 appropriate resizing.
