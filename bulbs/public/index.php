@@ -5,6 +5,9 @@
         <title>Test</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="title" content="CS50 Binary Bulbs" />
+        <meta name="description" content="Use light bulbs to represent decimal numbers in binary!" />
+        <link rel="image_src" href="img/bulbs-thumb.png" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-toggle.css">
         <link rel="stylesheet" type="text/css" href="css/jquery.qtip.css">
