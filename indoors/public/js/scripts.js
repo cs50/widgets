@@ -54,6 +54,12 @@ $(function() {
             }
         });
     });*/
+    $(".handle").each(function() {
+        $(this).on("mouseup", function() {
+  //          $(this).siblings("img").eq(0).trigger('click');
+            $(this).hide();
+        });
+    });
     
     // Sort Switch either sorts or shuffles numbers and starts new game
     if (sorted === "0") {
@@ -97,8 +103,10 @@ $(function() {
     // Big O Switch prompts game to play in either 15 or 4 moves.
     if (bigO === "logn") {
         $("#oSwitch").bootstrapToggle("off");
+        console.log('toggled off');
     }
     else if (bigO === "n") {
+        console.log('toggled on');
         $("#oSwitch").bootstrapToggle("on");
     }
     $("#OLabel").on("click", function() {
@@ -147,7 +155,6 @@ function parseURL(str) {
     var labeled = "";
     var target = "50";
     var bigO = "";
-    //var prompted = "1";
     if (str.indexOf("target") !== -1) {
         target = "";
         for (var k = str.indexOf("target") + 7;
@@ -164,7 +171,7 @@ function parseURL(str) {
         for (var k = 0; k < arr.length; k++) {
             arr[k] = parseInt(arr[k], 10);
         }
-        if (contains(arr, parseInt(target), DOORS) === false) {
+        if (contains(arr, parseInt(target, 10), DOORS) === false) {
             target = arr[Math.floor((Math.random() * DOORS))];
         }
     }
@@ -227,22 +234,6 @@ function loadNumbers(arr) {
         $(this).children("p").html(arr[i]);
         i++;
     });
-    $(".number").each(function() {
-        adjustNumberPlace(this);
-    });
-}
-
-/* Adjusts central placement behind doors */
-function adjustNumberPlace(obj) {
-    if ($(obj).attr("value") >= 20) {
-        $(obj).css("left", "2.5vw");
-    }
-    else if ($(obj).attr("value") >= 10) {
-        $(obj).css("left", "2.7vw");
-    }
-    else {
-        $(obj).css("left", "3vw");
-    }
 }
 
 // Sorts or shuffles numbers behind doors
@@ -265,7 +256,14 @@ function checkDoor(obj) {
     if (isPlaying) {
         $("#oSwitch").bootstrapToggle("disable");
         $("#sortSwitch").bootstrapToggle("disable");
-        tooltips(".ttip", "Start a new game to toggle switch!");
+        tooltips("#oDiv, #sortDiv", "Start a new game to toggle switch!");
+        $("#OLabel, #sortLabel").css({
+            "cursor" : "-webkit-not-allowed",
+            "cursor" : "-moz-not-allowed",
+            "cursor" : "not-allowed"
+        });
+        $("#oDiv").addClass("importantRule");
+        $("#sortDiv").addClass("importantRule");
     }
     openDoor(obj);
     if (matchesValue(obj)) {
@@ -275,7 +273,7 @@ function checkDoor(obj) {
     else {
         if (isPlaying) {
             var x = $("#steps").html();
-            $("#steps").html(parseInt(x)- 1);
+            $("#steps").html(parseInt(x) - 1);
         }
         if ($("#steps").html() === "1") {
             var temp = $("#gameText").html();
@@ -310,31 +308,23 @@ function closeDoor(obj) {
     temp.css("visibility", "visible");
     $(obj).css("visibility", "visible");
     setNumColor(obj, "black");
+    $(".handle").each(function() {
+        $(this).show();
+    });
 }
 
 // Loses the game, revealing the answer and closing doors.
 function lose() {
-    $(".ttip").qtip('destroy');
+    $("#oDiv").qtip('destroy');
+    $("#sortDiv").qtip('destroy');
     $("#sortSwitch").bootstrapToggle("disable");
     $("#oSwitch").bootstrapToggle("disable");
     $("#labelSwitch").bootstrapToggle("disable");
-    $(".door").each(function() {
-        if (matchesValue(this)) {
-            openDoor(this);
-            setNumColor(this, "green");
-        }
-    });
-    celeb = setInterval(function() {
-        $("#gameText").html("Time's up!");
-    }, ANIMATE_TIME);
-    timeout = setTimeout(function() {
-        resetState();
-        $("#sortSwitch").bootstrapToggle("enable");
-        $("#labelSwitch").bootstrapToggle("enable");
-        $("#oSwitch").bootstrapToggle("enable");
-        $("#gameText").html( 'Find the number <span id="gameVal"' + 
-            'value=""></span> in <span id="steps">15</span> steps!');
-    }, OPEN_TIME);
+    $("#gameText").html("Time's up!");
+    resetState();
+    $("#sortSwitch").bootstrapToggle("enable");
+    $("#labelSwitch").bootstrapToggle("enable");
+    $("#oSwitch").bootstrapToggle("enable");
 }
 
 // Opens all doors, bounces numbers, closes doors.
@@ -344,21 +334,19 @@ function celebrate(obj) {
     $("#oSwitch").bootstrapToggle("disable");
     $("#labelSwitch").bootstrapToggle("disable");
     $("#gameText").html("You win!");
-    
     setNumColor(obj, "green");
     celeb = setInterval(function() {
-        move($(obj).siblings("p").eq(0), "-=20");
-        move($(obj).siblings("p").eq(0), "+=20");
+        move($(obj).siblings("p").eq(0), "-=1vw");
+        move($(obj).siblings("p").eq(0), "+=1vw");
     }, ANIMATE_TIME);
         
     timeout = setTimeout(function() {
         clearInterval(celeb);
         resetState();
+        $(obj).siblings("p").eq(0).css("top", "-5vw");
         $("#sortSwitch").bootstrapToggle("enable");
         $("#labelSwitch").bootstrapToggle("enable");
         $("#oSwitch").bootstrapToggle("enable");
-        $("#gameText").html( 'Find the number <span id="gameVal"' + 
-            'value=""></span> in <span id="steps">15</span> steps!');
     }, OPEN_TIME); 
 }
 
@@ -373,13 +361,18 @@ function move(obj, magnitude) {
 function resetState() {
     $("#gameVal").html("");
     $("#gameVal").attr("value", "");
-    $("#gameText").css("visibility", "hidden");
-    if ($("#oSwitch").prop("checked") === true) {
+
+    if ($("#oSwitch").prop("checked")) {
         $("#steps").html("15");
     }
     else {
         $("#steps").html("4");
     }
+    $("#OLabel, #sortLabel").css({
+        "cursor" : "pointer",
+    });
+    $("#oDiv").removeClass("importantRule");
+    $("#sortDiv").removeClass("importantRule");
     isPlaying = false;
 }
 
@@ -464,7 +457,7 @@ function startGame() {
 // Initializes a game state.
 function initGame() {
     isPlaying = true;
-    $("#gameText").html( 'Find the number <span id="gameVal"' + 
+    $("#gameText").html( 'Find <span id="gameVal"' + 
         'value=""></span> in <span id="steps">15</span> steps!');
     if ($("#oSwitch").prop("checked") === false) {
         $("#steps").html("4");
@@ -507,11 +500,11 @@ function toggleLabels (state) {
     if (!state) {
         $(".door").each(function() {
             var temp = $(this).children(".index").eq(0);
-            if ($("#labelSwitch").prop("checked") === true) {
+            if ($("#labelSwitch").prop("checked")) {
                 temp.html(temp.attr("id").substring(1));
             }
             else {
-                temp.html("");
+                temp.html("&nbsp;");
             }
         });
     }

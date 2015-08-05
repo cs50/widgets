@@ -102,7 +102,7 @@ function msieversion() {
 
 // Handles window scaling for buttons and bulbs.
 function scale() {
-    var newWidth = Math.max(0.8, $(window).width() / WIDTH * 1.4);
+    var newWidth = Math.max(0.7, $(window).width() / WIDTH * 1.4);
     $(".button").each(function() {
         $(this).css("transform", "scale(" + newWidth + ", " + newWidth + ")");  
     });

@@ -29,6 +29,7 @@
                 <div class="door" id="door' . $k . '">
                     <p class="text index" id="i' . $k . '">' . $k . '</p>
                     <img src="img/door-still.png">
+                    <img class="handle" src="img/door-handle.png">
                 </div>
                 <p class="text number" id="num' . $k . '" value=""></p>
             </div>');
@@ -39,13 +40,14 @@
     <p class="text" id="gameText">
         Find the number <span id="gameVal" value=""></span> in <span id="steps">15</span> steps!
     </p>
-    <center><button type="button" class="btn btn-primary btn-sm" id="playButton">New Game</button></center>
-    <ul>
-        <li>
+    <center><button type="button" class="btn btn-primary btn-md" id="playButton">New Game</button></center>
+    <center><ul>
+        <li id="oDiv2">
+            <div id="oDiv">
             <div class="ttip button">
-                <p class="text labels" id="OLabel">Efficiency</p>
-                <input class="toggle-group" id="oSwitch" checked type="checkbox" 
-                    data-toggle="toggle" data-size="small"> 
+                <p class="ttip text labels" id="OLabel">Efficiency</p>
+                <input class="ttip toggle-group" id="oSwitch"
+                checked type="checkbox" data-toggle="toggle" data-size="medium">  
                 <script>
                     $("#oSwitch").bootstrapToggle({
                         on: 'O(<i>n</i>)',
@@ -55,24 +57,29 @@
                     });
                 </script>
             </div>
+            </div>
         </li>
-        <li id="labelDiv">
+        <li id="labelDiv2">
+            <div id="labelDiv">
             <div class="button">
                 <p class="text labels" id="labelLabel">Labels</p>
                 <input class="toggle-group" id="labelSwitch"
-                checked type="checkbox" data-toggle="toggle" data-size="small">    
+                checked type="checkbox" data-toggle="toggle" data-size="medium">    
+            </div>
             </div>
         </li>
         <!--<li><button type="button" class="btn btn-info btn-md" id="playButton">Game Mode</button></li>-->
-        <li>
+        <li id="sortDiv2">
+            <div id="sortDiv">
             <div class="ttip button">
-                <p class="text labels" id="sortLabel">Sorted</p>
-                <input class="toggle-group" id="sortSwitch" checked type="checkbox" 
-                    data-toggle="toggle" data-size="small">    
+                <p class="ttip text labels" id="sortLabel">Sorted</p>
+                <input class="ttip toggle-group" id="sortSwitch" checked type="checkbox" 
+                    data-toggle="toggle" data-size="medium">    
+            </div>
             </div>
         </li>
-    </ul>
-    <p class="text" id="footer">Doors by 
+    </ul></center>
+    <p class="text" id="footer">Indoors by 
         <a href="https://cs50.harvard.edu/">CS50</a></p>
 </div>
 </body>
