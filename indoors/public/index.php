@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="title" content="CS50 Indoors" />
     <meta name="description" content="Use binary and linear search to find the number!" />
-    <link rel="image_src" href="img/indoors.png" />
+    <link rel="image_src" href="img/indoors-thumb.png" />
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-toggle.css">
     <link rel="stylesheet" type="text/css" href="css/jquery.qtip.css">
@@ -45,6 +45,7 @@
     </p>
     <center><button type="button" class="btn btn-primary btn-md" id="playButton">New Game</button></center>
     <center><ul>
+        <!-- Label _div2 vs _div necessary for css hackishness -->
         <li id="oDiv2">
             <div id="oDiv">
             <div class="ttip button">
@@ -71,7 +72,6 @@
             </div>
             </div>
         </li>
-        <!--<li><button type="button" class="btn btn-info btn-md" id="playButton">Game Mode</button></li>-->
         <li id="sortDiv2">
             <div id="sortDiv">
             <div class="ttip button">

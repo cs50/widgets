@@ -23,7 +23,6 @@ var sorted = inputs.sorted;
 var labeled = inputs.labeled;
 var bigO = inputs.bigO;
 var target = parseInt(inputs.target);
-//var prompted = inputs.prompted;
 
 $(function() {
     loadCache();
@@ -47,16 +46,9 @@ $(function() {
             $(this).siblings(".door").eq(0).trigger("click");
         });
     });
-    /*$(".number").each(function() {
-        $(this).click(function() {
-            if (!isPlaying) {
-                closeDoor($(this).siblings(".door").eq(0));
-            }
-        });
-    });*/
+
     $(".handle").each(function() {
         $(this).on("mouseup", function() {
-  //          $(this).siblings("img").eq(0).trigger('click');
             $(this).hide();
         });
     });
@@ -103,10 +95,8 @@ $(function() {
     // Big O Switch prompts game to play in either 15 or 4 moves.
     if (bigO === "logn") {
         $("#oSwitch").bootstrapToggle("off");
-        console.log('toggled off');
     }
     else if (bigO === "n") {
-        console.log('toggled on');
         $("#oSwitch").bootstrapToggle("on");
     }
     $("#OLabel").on("click", function() {
@@ -148,7 +138,7 @@ function scale() {
     });
 }
 
-/* Parses URL for nums, sorted, labeled, target, bigO and -not prompt- */
+/* Parses URL for nums, sorted, labeled, target, bigO */
 function parseURL(str) {
     var arr = "";
     var sorted = "";
@@ -192,12 +182,8 @@ function parseURL(str) {
         && str.indexOf("sorted") + 7 <= str.length) {
         sorted = str.charAt(str.indexOf("sorted") + 7);
     }
-/*    if (str.indexOf("prompt") !== -1
-        && str.indexOf("prompt") + 7 <= str.length) {
-        prompted = str.charAt(str.indexOf("prompt") + 7);
-    }*/
     return {"array": arr, "sorted": sorted, "labeled" : labeled, 
-        /*"prompted" : prompted,*/ "target" : target, "bigO" : bigO};
+                "target" : target, "bigO" : bigO};
 }
 
 // Generates unique array of numbers always including the target
@@ -376,86 +362,8 @@ function resetState() {
     isPlaying = false;
 }
 
-//Starts a game by initializing a game state.
-function startGame() {
-    /*if (prompted === "1") {
-         var dialog = new BootstrapDialog({
-                title: "Input " + DOORS + " numbers between 0 and 99",
-                message: function(dialogRef){
-                    var $message = $('<div id="vals"><input autofocus type="text"' + 
-                        'class="form-control" id="v0" placeholder="' + nums[0] + '">' +
-                        '<input type="text" class="form-control" id="v1" placeholder="' + nums[1] + '">' +
-                        '<input type="text" class="form-control" id="v2" placeholder="' + nums[2] + '">' +
-                        '<input type="text" class="form-control" id="v3" placeholder="' + nums[3] + '">' +
-                        '<input type="text" class="form-control" id="v4" placeholder="' + nums[4] + '">' +
-                        '<input type="text" class="form-control" id="v5" placeholder="' + nums[5] + '">' +
-                        '<input type="text" class="form-control" id="v6" placeholder="' + nums[6] + '">' +
-                        '<input type="text" class="form-control" id="v7" placeholder="' + nums[7] + '">' +
-                        '<input type="text" class="form-control" id="v8" placeholder="' + nums[8] + '">' +
-                        '<input type="text" class="form-control" id="v9" placeholder="' + nums[9] + '">' +
-                        '<input type="text" class="form-control" id="v10" placeholder="' + nums[10] + '">' +
-                        '<input type="text" class="form-control" id="v11" placeholder="' + nums[11] + '">' +
-                        '<input type="text" class="form-control" id="v12" placeholder="' + nums[12] + '">' +
-                        '<input type="text" class="form-control" id="v13" placeholder="' + nums[13] + '">' +
-                        '<input type="text" class="form-control" id="v14" placeholder="' + nums[14] + '"><br>');
-                    var $button = $('<button type="submit" id="gok" class="btn ' + 
-                                        'btn-primary btn-block">OK</button></div>');
-                    $button.on('click', {dialogRef: dialogRef}, function(event) {
-                        var tempArr = Array(DOORS);
-                        for (var k = 0; k < DOORS; k++) {
-                            if ($("#v" + k).val() == "") {
-                                $("#v" + k).val($("#v" + k).attr("placeholder"));
-                            }
-                            var result = $("#v" + k).val();
-                            if (isNaN(result)) {
-                                makeAlert("Inputs must be numbers!");
-                                return false;
-                            }
-                            else if (result < 0 || result > 99) {
-                                makeAlert("Numbers must be between 0 and 99!");
-                                return false;
-                            }
-                            else if (result%1 != 0) {
-                                makeAlert("Numbers must be integers!");
-                                return false;
-                            }
-                            tempArr[k] = result;
-                        }
-                        for (var k = 0; k < tempArr.length - 1; k++) {
-                            for (var j = k + 1; j < tempArr.length - 1; j++) {
-                                if (tempArr[k] === tempArr[j]) {
-                                    makeAlert("No duplicate numbers!");
-                                    return false;
-                                }
-                            }
-                        }
-                        nums = tempArr;
-                        organizeNumbers();
-                        loadNumbers(nums);
-                        initGame();
-                        event.data.dialogRef.close();
-                    });
-                    $message.append($button);
-                    return $message;
-                },
-                closable: false,
-                onshown: function() { 
-                    $("#v0").focus(); 
-                }
-            });
-        dialog.realize();
-        dialog.getModalFooter().hide();
-        dialog.setClosable(true);
-        dialog.getModalBody().css('color', '#fff');
-        dialog.open();
-    }
-    else {*/
-        initGame();
-//    }
-}
-
 // Initializes a game state.
-function initGame() {
+function startgame() {
     isPlaying = true;
     $("#gameText").html( 'Find <span id="gameVal"' + 
         'value=""></span> in <span id="steps">15</span> steps!');
@@ -475,25 +383,6 @@ function initGame() {
     $("#gameVal").html(val);
     $("#gameVal").attr("value", val);
 }
-
-// Makes an alert for incorrect inputs to modal
-/*function makeAlert(str) {
-    var alrt = new BootstrapDialog({
-        title: str,
-        message: function(dialogRef) {
-            var $btn = $('<button type="submit" class="btn btn-primary btn-block">OK</button></div>');
-            $btn.on('click', {dialogRef: dialogRef}, function(event) {
-                event.data.dialogRef.close();
-            });
-            return $btn;
-        }
-    });
-    alrt.realize();
-    alrt.getModalFooter().hide();
-    alrt.setClosable(false);
-    alrt.getModalBody().css('color', '#000');
-    alrt.open();
-}*/
 
 //Enables and disables door indices
 function toggleLabels (state) {
