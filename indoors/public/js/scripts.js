@@ -25,110 +25,126 @@ var bigO = inputs.bigO;
 var target = parseInt(inputs.target);
 
 $(function() {
-    loadCache();
-
-    // Initial / resized scaling.
-    scale();
-    $(window).resize(function(){
+    if (msieversion() < 0 || msieversion() >= 10) {  
+        loadCache();
+    
+        // Initial / resized scaling.
         scale();
-    });
-
-    // Disable image drag and toggle doors on click
-    $(".door").each(function() {
-        $(this).on('dragstart', function() {return false;});
-        $(this).click(function() {
-            checkDoor(this);
+        $(window).resize(function(){
+            scale();
         });
-    });
-    // Open doors on index click
-    $(".index").each(function() {
-        $(this).click(function() {
-            $(this).siblings(".door").eq(0).trigger("click");
-        });
-    });
-
-    $(".handle").each(function() {
-        $(this).on("mouseup", function() {
-            $(this).hide();
-        });
-    });
     
-    // Sort Switch either sorts or shuffles numbers and starts new game
-    if (sorted === "0") {
-        $("#sortSwitch").bootstrapToggle("off");
-    }
-    else if (sorted === "1") {
-        $("#sortSwitch").bootstrapToggle("on");
-    }
-    $("#sortLabel").on("click", function() {
-        $("#sortSwitch").bootstrapToggle('toggle');
-    });
-    $("#sortSwitch").change(function() {
-        organizeNumbers();
-        loadNumbers(nums);
+        // Disable image drag and toggle doors on click
         $(".door").each(function() {
-            closeDoor(this);
+            $(this).on('dragstart', function() {return false;});
+            $(this).click(function() {
+                checkDoor(this);
+            });
         });
-        if (isPlaying) {
-            startGame();
+        // Open doors on index click
+        $(".index").each(function() {
+            $(this).click(function() {
+                $(this).siblings(".door").eq(0).trigger("click");
+            });
+        });
+    
+        $(".handle").each(function() {
+            $(this).on("mouseup", function() {
+                $(this).hide();
+            });
+        });
+        
+        // Sort Switch either sorts or shuffles numbers and starts new game
+        if (sorted === "0") {
+            $("#sortSwitch").bootstrapToggle("off");
         }
-        cache();
-    });
-    
-    // Label switch toggles labels on and off.
-    if (labeled === "0") {
-        $("#labelSwitch").bootstrapToggle("off");
-        toggleLabels();
-    }
-    else if (labeled === "1") {
-        $("#labelSwitch").bootstrapToggle("on");
-        toggleLabels();
-    }
-    $("#labelLabel").on("click", function() {
-        $("#labelSwitch").bootstrapToggle('toggle');
-    });
-    $("#labelSwitch").change(function() {
-        toggleLabels();
-        cache();
-    });
-    
-    // Big O Switch prompts game to play in either 15 or 4 moves.
-    if (bigO === "logn") {
-        $("#oSwitch").bootstrapToggle("off");
-    }
-    else if (bigO === "n") {
-        $("#oSwitch").bootstrapToggle("on");
-    }
-    $("#OLabel").on("click", function() {
-        $("#oSwitch").bootstrapToggle('toggle');
-    });
-    $("#oSwitch").change(function() {
-        if (isPlaying) {
-            startGame();
+        else if (sorted === "1") {
+            $("#sortSwitch").bootstrapToggle("on");
         }
-        cache();
-    });
-    
-    // Play Button starts new game
-    $("#playButton").on("click", function() {
+        $("#sortLabel").on("click", function() {
+            $("#sortSwitch").bootstrapToggle('toggle');
+        });
+        $("#sortSwitch").change(function() {
+            organizeNumbers();
+            loadNumbers(nums);
+            $(".door").each(function() {
+                closeDoor(this);
+            });
+            if (isPlaying) {
+                startGame();
+            }
+            cache();
+        });
+        
+        // Label switch toggles labels on and off.
+        if (labeled === "0") {
+            $("#labelSwitch").bootstrapToggle("off");
+            toggleLabels();
+        }
+        else if (labeled === "1") {
+            $("#labelSwitch").bootstrapToggle("on");
+            toggleLabels();
+        }
+        $("#labelLabel").on("click", function() {
+            $("#labelSwitch").bootstrapToggle('toggle');
+        });
+        $("#labelSwitch").change(function() {
+            toggleLabels();
+            cache();
+        });
+        
+        // Big O Switch prompts game to play in either 15 or 4 moves.
+        if (bigO === "logn") {
+            $("#oSwitch").bootstrapToggle("off");
+        }
+        else if (bigO === "n") {
+            $("#oSwitch").bootstrapToggle("on");
+        }
+        $("#OLabel").on("click", function() {
+            $("#oSwitch").bootstrapToggle('toggle');
+        });
+        $("#oSwitch").change(function() {
+            if (isPlaying) {
+                startGame();
+            }
+            cache();
+        });
+        
+        // Play Button starts new game
+        $("#playButton").on("click", function() {
+            organizeNumbers();
+            loadNumbers(nums);
+            clearInterval(celeb);
+            clearTimeout(timeout);
+            startGame();
+            $("#oSwitch").bootstrapToggle("enable");
+            $("#sortSwitch").bootstrapToggle("enable");
+        });
+        
+        // Generates array of numbers if not given
+        if (!nums) {
+            nums = generateNumbers();
+        }
         organizeNumbers();
         loadNumbers(nums);
-        clearInterval(celeb);
-        clearTimeout(timeout);
         startGame();
-        $("#oSwitch").bootstrapToggle("enable");
-        $("#sortSwitch").bootstrapToggle("enable");
-    });
-    
-    // Generates array of numbers if not given
-    if (!nums) {
-        nums = generateNumbers();
+        cache();
     }
-    organizeNumbers();
-    loadNumbers(nums);
-    startGame();
-    cache();
+    else {
+        $("body").html("Sorry! This widget requires a newer browser.");
+    }
 });
+
+// Handles IE <= 9
+function msieversion() {
+        var ua = window.navigator.userAgent;
+        var msie = ua.indexOf("MSIE ");
+        // If Internet Explorer, return version number
+        if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))
+            return parseInt(ua.substring(msie + 5, ua.indexOf(".", msie)), 10);
+        else
+            return -1;
+}
 
 function scale() {
     var newWidth = Math.max(0.8, $(window).width() / WIDTH);
@@ -315,15 +331,15 @@ function lose() {
 
 // Opens all doors, bounces numbers, closes doors.
 function celebrate(obj) {
-    $(".ttip").qtip('destroy');
     $("#sortSwitch").bootstrapToggle("disable");
     $("#oSwitch").bootstrapToggle("disable");
     $("#labelSwitch").bootstrapToggle("disable");
     $("#gameText").html("You win!");
     setNumColor(obj, "green");
+    var toMove = $(obj).siblings("p").eq(0);
     celeb = setInterval(function() {
-        move($(obj).siblings("p").eq(0), "-=1vw");
-        move($(obj).siblings("p").eq(0), "+=1vw");
+        move(toMove, "-=1vw");
+        move(toMove, "+=1vw");
     }, ANIMATE_TIME);
         
     timeout = setTimeout(function() {
@@ -333,6 +349,8 @@ function celebrate(obj) {
         $("#sortSwitch").bootstrapToggle("enable");
         $("#labelSwitch").bootstrapToggle("enable");
         $("#oSwitch").bootstrapToggle("enable");
+        $("#oDiv").qtip('destroy');
+        $("#sortDiv").qtip('destroy');
     }, OPEN_TIME); 
 }
 
@@ -355,7 +373,7 @@ function resetState() {
         $("#steps").html("4");
     }
     $("#OLabel, #sortLabel").css({
-        "cursor" : "pointer",
+        "cursor" : "pointer"
     });
     $("#oDiv").removeClass("importantRule");
     $("#sortDiv").removeClass("importantRule");
@@ -363,7 +381,7 @@ function resetState() {
 }
 
 // Initializes a game state.
-function startgame() {
+function startGame() {
     isPlaying = true;
     $("#gameText").html( 'Find <span id="gameVal"' + 
         'value=""></span> in <span id="steps">15</span> steps!');
