@@ -1,24 +1,62 @@
-<!--Binary Bulbs Widget
-    Michael Ge, 2015-->
+<!-- 
+
+CS50's Binary Bulbs
+
+by Michael Ge, 2015
+
+-->
+
+<?php require(__DIR__ . "/../../lib/functions.php"); ?>
+
 <!DOCTYPE html>
     <head>
-        <title>Test</title>
+
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="title" content="CS50 Binary Bulbs" />
-        <meta name="description" content="Use light bulbs to represent decimal numbers in binary!" />
-        <link rel="image_src" href="img/bulbs-thumb.png" />
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-toggle.css">
-        <link rel="stylesheet" type="text/css" href="css/jquery.qtip.css">
-        <link rel="stylesheet" type="text/css" href="css/bootstrap-dialog.css">
-        <link rel="stylesheet" type="text/css" href="css/styles.css">
-        <script src="js/jquery.js"></script>
-        <script src="js/jquery.qtip.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/bootstrap-toggle.js"></script>
-        <script src="js/bootstrap-dialog.js"></script>      
-        <script src="js/scripts.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="title" content="CS50 Binary Bulbs"/>
+        <meta name="description" content="Learn to count in binary with CS50's Binary Bulbs!"/>
+
+        <?php /* TODO: PNG missing
+        <link rel="image_src" href="<?= img_encode("img/bulbs-thumb.png") ?>"/>
+        */ ?> 
+
+        <?php
+
+            $styles = [
+                "css/bootstrap.min.css",
+                "css/bootstrap-toggle.css",
+                "css/jquery.qtip.css",
+                "css/bootstrap-dialog.css",
+                "css/styles.css"
+            ];
+            foreach ($styles as $style) {
+                print("\n<style>\n");
+                print(file_get_contents($style));
+                print("\n</style>\n");
+            }
+
+        ?>
+
+        <?php
+
+            $scripts = [
+                "js/jquery.js",
+                "js/jquery.qtip.js",
+                "js/bootstrap.min.js",
+                "js/bootstrap-toggle.js",
+                "js/bootstrap-dialog.js",
+                "js/scripts.js"
+            ];
+            foreach ($scripts as $script) {
+                print("\n<script>\n");
+                print(file_get_contents($script));
+                print("\n</script>\n");
+            }
+
+        ?>
+
+        <title>Binary Bulbs</title>
+
     </head>
     
     <body>
@@ -35,10 +73,10 @@
                     <figcaption value=\"" . $MAX . "\" class=\"text labels\" id=\"label" . 
                     $k . "\">" . $MAX . "</figcaption>
                     <img value=\"" . $MAX . "\" class=\"bulb\" id=\"bulb" . 
-                    $k . "\" src=\"img/bin_off_med.png\" data-toggle=\"tooltip\" 
+                    $k . "\" src=\"" . img_encode("img/bin_off_med.png") . "\" data-toggle=\"tooltip\" 
                     data-placement=\"bottom\" title=\"toggle state\">
                     <img class=\"on\" id=\"bulb" . $k . "on\" 
-                    src=\"img/bin_on_med.png\" data-toggle=\"tooltip\" 
+                    src=\"" . img_encode("img/bin_on_med.png") . "\" data-toggle=\"tooltip\" 
                     data-placement=\"bottom\" title=\"toggle state\"></figure>");
                 }
             ?>
@@ -46,11 +84,11 @@
 
 
         <div id="controller">
-            <img value="1" class="ctrlButtons" id="up" src="img/up.png" 
+            <img value="1" class="ctrlButtons" id="up" src="<?= img_encode("img/up.png") ?>" 
                 data-toggle="tooltip" data-placement="right" title="increment value"><br> 
             <span data-toggle="tooltip" title="value in decimal" 
                 data-placement="right" class="text" id="decimal">0</span><br>
-            <img value="-1" id="down" class="ctrlButtons" src="img/down.png" 
+                <img value="-1" id="down" class="ctrlButtons" src="<?= img_encode("img/down.png") ?>" 
                 data-toggle="tooltip" data-placement="right" title="decrement value">
             <p class="text" id="game">
                 How do you represent the number
@@ -88,3 +126,4 @@
     </div>
     </center>
     </body>
+</html>
