@@ -17,7 +17,7 @@ by Michael Ge, 2015
         <meta name="description" content="Learn to count in binary with CS50's Binary Bulbs!"/>
 
         
-            <link rel="image_src" href="<?= img_encode("img/bulbs-thumb.png") ?>"/>
+            <link rel="image_src" href="<?= base64_encode("img/bulbs-thumb.png") ?>"/>
          
 
         <?php
@@ -347,8 +347,8 @@ by Michael Ge, 2015
             //max width of screen
             var WIDTH = Math.max(screen.width, screen.height);
             //ON and OFF bulb directories
-            var ON = "<?= img_encode("img/bin_on_med.png") ?>";
-            var OFF = "<?= img_encode("img/bin_off_med.png") ?>";
+            var ON = "<?= base64_encode("img/bin_on_med.png") ?>";
+            var OFF = "<?= base64_encode("img/bin_off_med.png") ?>";
 
             $(function () {
                 //Checks for IE <= 9 and shows apology page.
@@ -656,7 +656,7 @@ by Michael Ge, 2015
             function toggleBulbs() {
                 $(".on").each(function() {
                     if ($(this).attr("src") === ON) {
-                        $(this).attr("src", "<?= img_encode("img/bin_on_med_1.png") ?>");
+                        $(this).attr("src", "<?= base64_encode("img/bin_on_med_1.png") ?>");
                     }
                     else {
                         $(this).attr("src", ON);
@@ -664,7 +664,7 @@ by Michael Ge, 2015
                 });
                 $(".bulb").each(function() {
                     if ($(this).attr("src") === OFF) {
-                        $(this).attr("src", "<?= img_encode("img/bin_off_med_1.png") ?>");
+                        $(this).attr("src", "<?= base64_encode("img/bin_off_med_1.png") ?>");
                     }
                     else {
                         $(this).attr("src", OFF);
@@ -780,13 +780,13 @@ by Michael Ge, 2015
                     
                     print("<img value=\"" . $MAX . "\"");
                     print("class=\"bulb\" id=\"bulb" . $k . "\" src=\"");
-                    print(img_encode("img/bin_off_med.png") . "\"");
+                    print(base64_encode("img/bin_off_med.png") . "\"");
                     print("data-toggle=\"tooltip\"");
                     print("data-placement=\"bottom\" title=\"toggle state\">");
                     
                     
                     print("<img class=\"on\" id=\"bulb" . $k . "on\"");
-                    print("src=\"" . img_encode("img/bin_on_med.png") . "\"");
+                    print("src=\"" . base64_encode("img/bin_on_med.png") . "\"");
                     print("data-toggle=\"tooltip\" data-placement=\"bottom\"");
                     print("title=\"toggle state\"></figure>");
                 }
@@ -795,11 +795,11 @@ by Michael Ge, 2015
 
 
         <div id="controller">
-            <img value="1" class="ctrlButtons" id="up" src="<?= img_encode("img/up.png") ?>" 
+            <img value="1" class="ctrlButtons" id="up" src="<?= base64_encode("img/up.png") ?>" 
                 data-toggle="tooltip" data-placement="right" title="increment value"><br> 
             <span data-toggle="tooltip" title="value in decimal" 
                 data-placement="right" class="text" id="decimal">0</span><br>
-                <img value="-1" id="down" class="ctrlButtons" src="<?= img_encode("img/down.png") ?>" 
+                <img value="-1" id="down" class="ctrlButtons" src="<?= base64_encode("img/down.png") ?>" 
                 data-toggle="tooltip" data-placement="right" title="decrement value">
             <p class="text" id="game">
                 How do you represent the number
