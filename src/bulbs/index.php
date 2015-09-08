@@ -16,9 +16,9 @@ by Michael Ge, 2015
         <meta name="title" content="CS50 Binary Bulbs"/>
         <meta name="description" content="Learn to count in binary with CS50's Binary Bulbs!"/>
 
-        <?php /* TODO: PNG missing
-        <link rel="image_src" href="<?= img_encode("img/bulbs-thumb.png") ?>"/>
-        */ ?> 
+        
+            <link rel="image_src" href="<?= img_encode("img/bulbs-thumb.png") ?>"/>
+         
 
         <?php
 
@@ -27,7 +27,6 @@ by Michael Ge, 2015
                 "css/bootstrap-toggle.css",
                 "css/jquery.qtip.css",
                 "css/bootstrap-dialog.css",
-                "css/styles.css"
             ];
             foreach ($styles as $style) {
                 print("\n<style>\n");
@@ -37,10 +36,285 @@ by Michael Ge, 2015
 
         ?>
 
-        <style>
-
-            /* TODO: move custom CSS from css/styles.css here, then remove css/styles.css mention above */
-
+                    <style>
+            html, body, div, span, applet, object, iframe,
+            h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+            a, abbr, acronym, address, big, cite, code,
+            del, dfn, em, img, ins, kbd, q, s, samp,
+            small, strike, strong, sub, sup, tt, var,
+            b, u, i, center,
+            dl, dt, dd, ol, ul, li,
+            fieldset, form, label, legend,
+            table, caption, tbody, tfoot, thead, tr, th, td,
+            article, aside, canvas, details, embed, 
+            figure, figcaption, footer, header, hgroup, 
+            menu, nav, output, ruby, section, summary,
+            time, mark, audio, video {
+            	margin: 0;
+            	padding: 0;
+            	border: 0;
+            	font-size: 100%;
+            	font: inherit;
+            	vertical-align: baseline;
+            }
+            /* HTML5 display-role reset for older browsers */
+            article, aside, details, figcaption, figure, 
+            footer, header, hgroup, menu, nav, section {
+            	display: block;
+            }
+            body {
+            	line-height: 1;
+            }
+            ol, ul {
+            	list-style: none;
+            }
+            blockquote, q {
+            	quotes: none;
+            }
+            blockquote:before, blockquote:after,
+            q:before, q:after {
+            	content: '';
+            	content: none;
+            }
+            table {
+            	border-collapse: collapse;
+            	border-spacing: 0;
+            }
+            
+            /* Custom styling */
+            
+            /* Sets font type to Gotham */
+            @font-face {
+                font-family: code;
+                src: url(../fonts/Gotham-Book.otf);
+            }
+            
+            /* Sets overall font, size, and blocks user highlighting/dragging */
+            .container {    
+                font-family: code, sans-serif;
+                width: 100%;
+                cursor: default;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            
+            img {
+                image-rendering: auto;
+            }
+            
+            /*Text style*/
+            .text {
+                font-family: code, sans-serif;
+                text-align: center;
+                -webkit-font-smoothing: antialiased;
+            
+            }
+            
+            /* Container for all bulbs and labels */
+            .images {   
+                position: relative;
+                top: 1vw;
+                text-align: center;    
+            }
+            
+            /* Mouse hover changes shape */
+            #bitLabel, #gameLabel, #bulbsMode, .on:hover, .bulb:hover, .labels:hover, .ctrlButtons:hover {
+                cursor: pointer;
+            }
+            
+            /* Figure style*/
+            .box {
+                display: inline-block;
+                position: relative;
+            }
+            
+            .labels {
+                position: relative;
+                margin-bottom: 1vw;
+                z-index: 0;
+                left: 3vw;
+                width: 4vw;
+                height: 2vw;
+            }
+            
+            .bulb, .on {
+                display: block;
+            }
+            
+            .bulb {
+                position: absolute;
+                z-index: 0;
+                opacity: 100;
+                width: 90%;
+            }
+            
+            .on {
+                position: relative;
+                z-index: -1;
+                top: -10000px;
+                width: 90%;
+            }
+            
+            /*Decimal value style*/
+            #decimal {
+                color: rgb(10, 10, 10);
+                font-size: 6vw;
+                margin-top: -0.3%;
+                margin-bottom: -0.4%;
+            }
+            
+            /*all labels style*/
+            figcaption {
+                visibility: visible;
+                margin-left: -5%;
+                margin-right: -5%;
+                margin-top: 8%;
+                font-size: 2vw;
+            }
+            
+            /*Controller styles*/
+            #controller {
+                position: relative;
+                right: 0.5vw;
+                text-align: center; 
+                margin-bottom: 1vh;
+            }
+            
+            /*Controller Buttons style*/
+            .ctrlButtons {
+                width: 3vw;
+                margin: 0;
+                text-align: center;
+            }
+            
+            /*Game mode's text*/
+            #game {
+                visibility: hidden;
+                font-size: 2vw;
+                margin-top: 2vw;
+                margin-bottom: 3vw;
+            }
+            
+            #settings {
+                display: block;
+                text-align: center;
+            }
+            
+            /*Toggle style*/
+            .toggle-group {
+                transition: none;
+                -webkit-transition: none;
+                -moz-transition: none;
+                -o-transition: none;
+            }
+            
+            #gameLabel, #bitLabel, #bulbsMode {
+                position: relative;
+                bottom: 10px;
+                text-align: center;
+            }
+            
+            #gameSwitch, #bitSwitch, #bulbSwitch {
+                position: absolute;
+                
+            }
+            
+            /*321*/
+            .settings {
+                list-style: none;
+                display: inline;
+                margin: 0;
+                padding: 0;
+                text-align: center;
+                height: auto;
+                width: 100%;
+                font-size: 2vw;
+            }
+            
+            li {
+                display: inline-block;
+            }
+            
+            .button {
+                height: auto;
+                width: 20vw;
+                text-align: center;
+            }
+            
+            #button3 {
+                margin: auto auto auto 0;
+            }
+            
+            #button1 {
+                margin: auto;
+            }
+            
+            #button2 {
+                margin: auto 0 auto auto;   
+            }
+            
+            #gameLabel {
+                overflow: visible;
+                white-space: nowrap;
+            }
+            
+            /*random number style*/
+            #changeNum {
+                font-size: 2vw;
+                visibility: hidden;
+            }
+            
+            .modal-content {
+                font-family: code, sans-serif;
+                text-align: center;
+                margin-left: 20%;
+                margin-right: 20%;
+            }
+            
+            .modal-footer {
+                position: relative;
+            }
+            
+            #footer {
+                font-size: 12px;
+                margin-top: 3vw;
+            }
+            
+            .btn {
+                padding-right: 10px;
+            }
+            
+            .bootbox-input, .bootbox-input-text, .form-control {
+                display: inline;
+            }
+            
+            .form-control {
+                width: 50%;
+                height: 35px;
+            }
+            
+            .btn-block {
+                display: inline;
+                width: 60px;
+                height: 35px;
+                text-align: center;
+            }
+            
+            #gval {
+                margin-right: 6px;
+                margin-left: 0;
+                display: inline;
+            }
+            
+            #gok, #cancel {
+                margin-left: 6px;
+                margin-right: 0;
+                display: inline;
+            }
         </style>
 
         <?php
@@ -315,7 +589,7 @@ by Michael Ge, 2015
                                             'class="form-control" id="gval">');
                         var $button = $('<button type="submit" id="gok" class="btn ' + 
                                             'btn-primary btn-block">OK</button></div>');
-                        $button.on('click', {dialogRef: dialogRef}, function(event) {
+                        $button.on("click", {dialogRef: dialogRef}, function(event) {
                             var result = $("#gval").val();
                             if (result === null) {
                                 $("#gameSwitch").bootstrapToggle("off");
@@ -352,6 +626,12 @@ by Michael Ge, 2015
                             $("#gameSwitch").bootstrapToggle("off"); 
                     }
                 });
+                /*$("#gok").keyup(function(e) {
+                    if (e.keyCode == 13) {
+                        $("#gok").click();
+                    }
+                    console.log("key was pressed");
+                });*/
                 dialog.realize();
                 dialog.getModalFooter().hide();
                 dialog.setClosable(true);
@@ -493,15 +773,22 @@ by Michael Ge, 2015
                 for ($k = 0; $k < $ids; $k++)
                 {
                     $MAX /= 2;
-                    print("<figure class=\"box\">
-                    <figcaption value=\"" . $MAX . "\" class=\"text labels\" id=\"label" . 
-                    $k . "\">" . $MAX . "</figcaption>
-                    <img value=\"" . $MAX . "\" class=\"bulb\" id=\"bulb" . 
-                    $k . "\" src=\"" . img_encode("img/bin_off_med.png") . "\" data-toggle=\"tooltip\" 
-                    data-placement=\"bottom\" title=\"toggle state\">
-                    <img class=\"on\" id=\"bulb" . $k . "on\" 
-                    src=\"" . img_encode("img/bin_on_med.png") . "\" data-toggle=\"tooltip\" 
-                    data-placement=\"bottom\" title=\"toggle state\"></figure>");
+                    print("<figure class=\"box\">");
+                    print("<figcaption value=\"" . $MAX . "\"");
+                    print(" class=\"text labels\" id=\"label" . $k . "\">" . $MAX);
+                    print("</figcaption>");
+                    
+                    print("<img value=\"" . $MAX . "\"");
+                    print("class=\"bulb\" id=\"bulb" . $k . "\" src=\"");
+                    print(img_encode("img/bin_off_med.png") . "\"");
+                    print("data-toggle=\"tooltip\"");
+                    print("data-placement=\"bottom\" title=\"toggle state\">");
+                    
+                    
+                    print("<img class=\"on\" id=\"bulb" . $k . "on\"");
+                    print("src=\"" . img_encode("img/bin_on_med.png") . "\"");
+                    print("data-toggle=\"tooltip\" data-placement=\"bottom\"");
+                    print("title=\"toggle state\"></figure>");
                 }
             ?>
         </div>
