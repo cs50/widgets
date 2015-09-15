@@ -4,6 +4,21 @@ CS50's Binary Bulbs
 
 by Michael Ge, 2015
 
+
+Online Widgets for CS50. Includes the following: 1. Bulbs - a binary arithmetic
+widget displaying both bulbs and bit representations as well as the option for a 
+game mode.
+
+Embedding Instructions
+
+Bulbs Embed bulbs with an iframe linking to index.php with a width and height. 
+Include teststyles.css as css file for appropriate resizing.
+
+Bulbs will always restore the previously cached state of the bulbs and switches.
+
+Doors Embed doors with an iframe linking to index.php with a width and height. 
+Include teststyles.css as css file for appropriate resizing.
+
 -->
 
 <?php require(__DIR__ . "/../../lib/functions.php"); ?>
