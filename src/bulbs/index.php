@@ -18,7 +18,6 @@ Bulbs will always restore the previously cached state of the bulbs and switches.
 
 Doors Embed doors with an iframe linking to index.php with a width and height. 
 Include teststyles.css as css file for appropriate resizing.
-
 -->
 
 <?php require(__DIR__ . "/../../lib/functions.php"); ?>
@@ -51,7 +50,7 @@ Include teststyles.css as css file for appropriate resizing.
 
         ?>
 
-                    <style>
+        <style>
             html, body, div, span, applet, object, iframe,
             h1, h2, h3, h4, h5, h6, p, blockquote, pre,
             a, abbr, acronym, address, big, cite, code,
