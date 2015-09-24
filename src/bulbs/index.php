@@ -31,7 +31,7 @@ Include teststyles.css as css file for appropriate resizing.
         <meta name="description" content="Learn to count in binary with CS50's Binary Bulbs!"/>
 
         
-            <link rel="image_src" href="<?= base64_encode("img/bulbs-thumb.png") ?>"/>
+            <link rel="image_src" href="img/bulbs-thumb.png">
          
 
         <?php
@@ -98,14 +98,14 @@ Include teststyles.css as css file for appropriate resizing.
             /* Custom styling */
             
             /* Sets font type to Gotham */
-            @font-face {
+            /*@font-face {
                 font-family: code;
                 src: url(../fonts/Gotham-Book.otf);
-            }
+            }*/
             
             /* Sets overall font, size, and blocks user highlighting/dragging */
             .container {    
-                font-family: code, sans-serif;
+                font-family: sans-serif;
                 width: 100%;
                 cursor: default;
                 -webkit-touch-callout: none;
@@ -122,7 +122,7 @@ Include teststyles.css as css file for appropriate resizing.
             
             /*Text style*/
             .text {
-                font-family: code, sans-serif;
+                font-family: sans-serif;
                 text-align: center;
                 -webkit-font-smoothing: antialiased;
             
@@ -283,7 +283,7 @@ Include teststyles.css as css file for appropriate resizing.
             }
             
             .modal-content {
-                font-family: code, sans-serif;
+                font-family: sans-serif;
                 text-align: center;
                 margin-left: 20%;
                 margin-right: 20%;
@@ -361,8 +361,12 @@ Include teststyles.css as css file for appropriate resizing.
             //max width of screen
             var WIDTH = Math.max(screen.width, screen.height);
             //ON and OFF bulb directories
-            var ON = "<?= base64_encode("img/bin_on_med.png") ?>";
-            var OFF = "<?= base64_encode("img/bin_off_med.png") ?>";
+            var ON = "<?= "img/bin_on_med.png" ?>";
+            var OFF = "<?= "img/bin_off_med.png" ?>";
+            //keeps track of whether OK button was clicked, super hackish atm
+            var clicked = false;
+            //var ON = "= //base64_encode("img/bin_on_med.png") ?>";
+            //var OFF = "= //base64_encode("img/bin_off_med.png") ?>";
 
             $(function () {
                 //Checks for IE <= 9 and shows apology page.
@@ -584,6 +588,7 @@ Include teststyles.css as css file for appropriate resizing.
 
             //toggles between game and play mode
             function changeMode() {
+                clicked = false;
                 if ($("#gameSwitch").prop("checked")) {
                     setGameValue();
                 }
@@ -599,11 +604,18 @@ Include teststyles.css as css file for appropriate resizing.
                 var dialog = new BootstrapDialog({
                     title: "Input a number between 1 and 255.",
                     message: function(dialogRef){
-                        var $message = $('<div><input autofocus type="text"' + 
-                                            'class="form-control" id="gval">');
+                        var $message = $('<div><input autofocus  id="gval" type="text"' + 
+                                            'class="form-control">');
                         var $button = $('<button type="submit" id="gok" class="btn ' + 
-                                            'btn-primary btn-block">OK</button></div>');
+                                            'btn-primary btn-block">OK</button></div>');   
+                        $(document).keypress(function(e) {
+                            if(e.which == 13 && !clicked) {
+                                $button.click();
+                            }
+                        });
                         $button.on("click", {dialogRef: dialogRef}, function(event) {
+                            clicked = true;
+                            $("#gval").focus();
                             var result = $("#gval").val();
                             if (result === null) {
                                 $("#gameSwitch").bootstrapToggle("off");
@@ -640,12 +652,6 @@ Include teststyles.css as css file for appropriate resizing.
                             $("#gameSwitch").bootstrapToggle("off"); 
                     }
                 });
-                /*$("#gok").keyup(function(e) {
-                    if (e.keyCode == 13) {
-                        $("#gok").click();
-                    }
-                    console.log("key was pressed");
-                });*/
                 dialog.realize();
                 dialog.getModalFooter().hide();
                 dialog.setClosable(true);
@@ -670,7 +676,7 @@ Include teststyles.css as css file for appropriate resizing.
             function toggleBulbs() {
                 $(".on").each(function() {
                     if ($(this).attr("src") === ON) {
-                        $(this).attr("src", "<?= base64_encode("img/bin_on_med_1.png") ?>");
+                        $(this).attr("src", "img/bin_on_med 1.png");
                     }
                     else {
                         $(this).attr("src", ON);
@@ -678,7 +684,7 @@ Include teststyles.css as css file for appropriate resizing.
                 });
                 $(".bulb").each(function() {
                     if ($(this).attr("src") === OFF) {
-                        $(this).attr("src", "<?= base64_encode("img/bin_off_med_1.png") ?>");
+                        $(this).attr("src", "img/bin_off_med_1.png");
                     }
                     else {
                         $(this).attr("src", OFF);
@@ -751,14 +757,19 @@ Include teststyles.css as css file for appropriate resizing.
                     toggleBulbs();
                 }
             }
-
             // Makes alert popup boxes.
             function makeAlert(str) {
                 var alrt = new BootstrapDialog({
                     title: str,
                     message: function(dialogRef) {
                         var $btn = $('<button type="submit" class="btn btn-primary btn-block">OK</button></div>');
+                        $(document).keypress(function(e) {
+                          if(e.which == 13) {
+                            $btn.click();
+                          }
+                        });
                         $btn.on('click', {dialogRef: dialogRef}, function(event) {
+                            clicked = false;
                             event.data.dialogRef.close();
                         });
                         return $btn;
@@ -794,13 +805,13 @@ Include teststyles.css as css file for appropriate resizing.
                     
                     print("<img value=\"" . $MAX . "\"");
                     print("class=\"bulb\" id=\"bulb" . $k . "\" src=\"");
-                    print(base64_encode("img/bin_off_med.png") . "\"");
+                    print("img/bin_off_med.png" . "\"");
                     print("data-toggle=\"tooltip\"");
                     print("data-placement=\"bottom\" title=\"toggle state\">");
                     
                     
                     print("<img class=\"on\" id=\"bulb" . $k . "on\"");
-                    print("src=\"" . base64_encode("img/bin_on_med.png") . "\"");
+                    print("src=\"" . "img/bin_on_med.png" . "\"");
                     print("data-toggle=\"tooltip\" data-placement=\"bottom\"");
                     print("title=\"toggle state\"></figure>");
                 }
@@ -809,11 +820,11 @@ Include teststyles.css as css file for appropriate resizing.
 
 
         <div id="controller">
-            <img value="1" class="ctrlButtons" id="up" src="<?= base64_encode("img/up.png") ?>" 
+            <img value="1" class="ctrlButtons" id="up" src="<?= "img/up.png" ?>" 
                 data-toggle="tooltip" data-placement="right" title="increment value"><br> 
             <span data-toggle="tooltip" title="value in decimal" 
                 data-placement="right" class="text" id="decimal">0</span><br>
-                <img value="-1" id="down" class="ctrlButtons" src="<?= base64_encode("img/down.png") ?>" 
+                <img value="-1" id="down" class="ctrlButtons" src="<?= "img/down.png" ?>" 
                 data-toggle="tooltip" data-placement="right" title="decrement value">
             <p class="text" id="game">
                 How do you represent the number
