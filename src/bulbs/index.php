@@ -31,7 +31,7 @@ Include teststyles.css as css file for appropriate resizing.
         <meta name="description" content="Learn to count in binary with CS50's Binary Bulbs!"/>
 
         
-            <link rel="image_src" href="img/bulbs-thumb.png">
+            <link rel="image_src" href=<?= img_encode("img/bulbs-thumb.png"); ?>>
          
 
         <?php
@@ -361,12 +361,10 @@ Include teststyles.css as css file for appropriate resizing.
             //max width of screen
             var WIDTH = Math.max(screen.width, screen.height);
             //ON and OFF bulb directories
-            var ON = "<?= "img/bin_on_med.png" ?>";
-            var OFF = "<?= "img/bin_off_med.png" ?>";
+            var ON = "<?= img_encode("img/bin_on_med.png"); ?>";
+            var OFF = "<?= img_encode("img/bin_off_med.png"); ?>";
             //keeps track of whether OK button was clicked, super hackish atm
             var clicked = false;
-            //var ON = "= //base64_encode("img/bin_on_med.png") ?>";
-            //var OFF = "= //base64_encode("img/bin_off_med.png") ?>";
 
             $(function () {
                 //Checks for IE <= 9 and shows apology page.
@@ -676,7 +674,7 @@ Include teststyles.css as css file for appropriate resizing.
             function toggleBulbs() {
                 $(".on").each(function() {
                     if ($(this).attr("src") === ON) {
-                        $(this).attr("src", "img/bin_on_med 1.png");
+                        $(this).attr("src", "<?= img_encode("img/bin_on_med_1.png"); ?>");
                     }
                     else {
                         $(this).attr("src", ON);
@@ -684,7 +682,7 @@ Include teststyles.css as css file for appropriate resizing.
                 });
                 $(".bulb").each(function() {
                     if ($(this).attr("src") === OFF) {
-                        $(this).attr("src", "img/bin_off_med_1.png");
+                        $(this).attr("src", "<?= img_encode("img/bin_off_med_1.png"); ?>");
                     }
                     else {
                         $(this).attr("src", OFF);
@@ -727,7 +725,7 @@ Include teststyles.css as css file for appropriate resizing.
 
             // Loads cache
             function restoreCache() {
-                //localStorage.clear();
+                localStorage.clear();
                 
                 //set game value
                 if (localStorage.getItem("gameMode") == "true") {
@@ -805,13 +803,13 @@ Include teststyles.css as css file for appropriate resizing.
                     
                     print("<img value=\"" . $MAX . "\"");
                     print("class=\"bulb\" id=\"bulb" . $k . "\" src=\"");
-                    print("img/bin_off_med.png" . "\"");
+                    print(img_encode("img/bin_off_med.png") . "\"");
                     print("data-toggle=\"tooltip\"");
                     print("data-placement=\"bottom\" title=\"toggle state\">");
                     
                     
                     print("<img class=\"on\" id=\"bulb" . $k . "on\"");
-                    print("src=\"" . "img/bin_on_med.png" . "\"");
+                    print("src=\"" . img_encode("img/bin_on_med.png") . "\"");
                     print("data-toggle=\"tooltip\" data-placement=\"bottom\"");
                     print("title=\"toggle state\"></figure>");
                 }
@@ -820,11 +818,11 @@ Include teststyles.css as css file for appropriate resizing.
 
 
         <div id="controller">
-            <img value="1" class="ctrlButtons" id="up" src="<?= "img/up.png" ?>" 
+            <img value="1" class="ctrlButtons" id="up" src="<?= img_encode("img/up.png"); ?>" 
                 data-toggle="tooltip" data-placement="right" title="increment value"><br> 
             <span data-toggle="tooltip" title="value in decimal" 
                 data-placement="right" class="text" id="decimal">0</span><br>
-                <img value="-1" id="down" class="ctrlButtons" src="<?= "img/down.png" ?>" 
+                <img value="-1" id="down" class="ctrlButtons" src="<?= img_encode("img/down.png"); ?>" 
                 data-toggle="tooltip" data-placement="right" title="decrement value">
             <p class="text" id="game">
                 How do you represent the number
