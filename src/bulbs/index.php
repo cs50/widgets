@@ -217,10 +217,6 @@ Include teststyles.css as css file for appropriate resizing.
                 display: block;
                 text-align: center;
             }
-            #settings li {
-                position: relative;
-                right: 0.3vw;
-            }
             
             /*Toggle style*/
             .toggle-group {
@@ -238,6 +234,7 @@ Include teststyles.css as css file for appropriate resizing.
             
             #gameSwitch, #bitSwitch, #bulbSwitch {
                 position: absolute;
+                
             }
             
             /*321*/
@@ -257,7 +254,6 @@ Include teststyles.css as css file for appropriate resizing.
             }
             
             .button {
-                font-size: 15px;
                 height: auto;
                 width: 20vw;
                 text-align: center;
@@ -299,7 +295,7 @@ Include teststyles.css as css file for appropriate resizing.
             
             #footer {
                 font-size: 12px;
-                margin-top: 2vw;
+                margin-top: 3vw;
             }
             
             .btn {
@@ -369,24 +365,11 @@ Include teststyles.css as css file for appropriate resizing.
             var OFF = "<?= img_encode("img/bin_off_med.png"); ?>";
             //keeps track of whether OK button was clicked, super hackish atm
             var clicked = false;
-            
+
             $(function () {
                 //Checks for IE <= 9 and shows apology page.
                 if (msieversion() < 0 || msieversion() >= 10) {
                     
-                    var repeat=0;
-                    $(document).on('keydown',function(e){ 
-                        if (e.keyCode == 13)
-                            repeat++;
-                        else repeat = 0;
-                        if(repeat>1) {                                    
-                            e.preventDefault();
-                        }
-                    });
-                    
-                    $(document).on('keyup',function(e){     
-                        repeat=0;            
-                    });
                     // Initial / resized scaling.
                     scale();
                     $(window).resize(function(){
@@ -470,8 +453,10 @@ Include teststyles.css as css file for appropriate resizing.
 
             // Handles window scaling for buttons and bulbs.
             function scale() {
-                var newWidth = $(window).width() / WIDTH * 1.4;
-
+                var newWidth = Math.max(0.7, $(window).width() / WIDTH * 1.4);
+                $(".button").each(function() {
+                    $(this).css("transform", "scale(" + newWidth + ", " + newWidth + ")");  
+                });
                 $(".bulb").each(function() {
                     $(this).css("max-width", $(window).width() / (IDS + 2));
                 });
@@ -601,7 +586,7 @@ Include teststyles.css as css file for appropriate resizing.
 
             //toggles between game and play mode
             function changeMode() {
-                stack = false;
+                clicked = false;
                 if ($("#gameSwitch").prop("checked")) {
                     setGameValue();
                 }
@@ -627,9 +612,9 @@ Include teststyles.css as css file for appropriate resizing.
                             }
                         });
                         $button.on("click", {dialogRef: dialogRef}, function(event) {
+                            clicked = true;
                             $("#gval").focus();
                             var result = $("#gval").val();
-                            clicked = true;
                             if (result === null) {
                                 $("#gameSwitch").bootstrapToggle("off");
                             }
@@ -740,7 +725,7 @@ Include teststyles.css as css file for appropriate resizing.
 
             // Loads cache
             function restoreCache() {
-                //localStorage.clear();
+                localStorage.clear();
                 
                 //set game value
                 if (localStorage.getItem("gameMode") == "true") {
@@ -782,9 +767,8 @@ Include teststyles.css as css file for appropriate resizing.
                           }
                         });
                         $btn.on('click', {dialogRef: dialogRef}, function(event) {
-                            event.data.dialogRef.close();
                             clicked = false;
-                            $("#gval").click();
+                            event.data.dialogRef.close();
                         });
                         return $btn;
                     }
@@ -852,21 +836,21 @@ Include teststyles.css as css file for appropriate resizing.
             <div class="button" id="button3">
                 <p class="text" id="bulbsMode">Bulbs</p>
                 <input id="bulbSwitch" class="toggle-group"
-                checked type="checkbox" data-toggle="toggle" data-size="medium">    
+                checked type="checkbox" data-toggle="toggle" data-size="mini">    
             </div>
             </li>
             <li>
             <div class="button" id="button1">
                 <p class="text" id="gameLabel">Game Mode</p>
                 <input id="gameSwitch" class="toggle-group" 
-                    unchecked type="checkbox" data-toggle="toggle" data-size="medium">
+                    unchecked type="checkbox" data-toggle="toggle" data-size="mini">
             </div>
             </li>
             <li>
             <div class="button" id="button2">
             <p class="text" id="bitLabel">Labels</p>
                 <input id="bitSwitch" class="toggle-group" 
-                    checked type="checkbox" data-toggle="toggle" data-size="medium">    
+                    checked type="checkbox" data-toggle="toggle" data-size="mini">    
             </div>
             </li>
         </ul>
